@@ -19,8 +19,9 @@ camelize(str);
 function camelize(str) {
 str = str.split('-'); // Разбиваем строку на массив из подстрок
 mod_str = str.map((word, index) => index == 0 ? word : word[0].toUpperCase() + word.slice(1));
-str = str1.join('');
+str = mod_str.join('');
 
+alert(`Новая строка: ${str}`)
 console.log(`Новая строка: ${str}`)
 };
 
