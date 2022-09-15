@@ -11,6 +11,7 @@
 let calc = new Calculator;
 
 alert( calc.calculate("3 + 7") ); // 10
+
 Затем добавьте метод addMethod(name, func), который добавляет в калькулятор новые операции. Он принимает оператор name и функцию с двумя аргументами func(a,b), которая описывает его.
 
 Например, давайте добавим умножение *, деление / и возведение в степень **:
@@ -30,35 +31,41 @@ alert( result ); // 8
 */
 
 let data = prompt('Введите два числа в формате "число оператор число": ',"");
+
 let calc = new Calculator;
 
-alert( calc.calculate(data) ); // 10
+calc.addMethod('*', (a, b) => (a * b));
+calc.addMethod('/', (a, b) => (a / b));
+calc.addMethod('**', (a, b) => (a ** b));
+
+alert(calc.calculate(data) ); // 10
 
 function Calculator() {
 
- this.method = {
-    '+': a + b,
-    '-': a - b,
+this.method = {
+    '+': (a, b) => (a + b),
+    '-': (a, b) => (a - b),
 };
     
-    
-    /*
-    if (operand == '+') {
-        res = this.method[0];
-    } else {
-        res = this.method[1];
-    };
-    return res;
-    */
-
-
 this.calculate = function(data) {
     let elem = data.split(' ');
     a = +elem[0];
     operand = elem[1];
     b = +elem[2];
 
+if (!this.method[operand] || isNaN(a) || isNaN(b)) {
+    (alert ("Ошибка ввода. Калькулятор вернул Вам NaN"));
+    }
+
+return this.method[operand](a, b);
 };
 
-
+this.addMethod = function (opName, func) {
+    this.method[opName] = func;
+}
 };
+
+/*
+Адский трындец. Нужно больше тренировок по работе с методами внутри функций.
+Необходимо именно понимание логики данного процесса
+*/
