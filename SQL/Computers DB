@@ -1,6 +1,0 @@
-CREATE TABLE PRODUCT
-(
-Maker varchar(10),
-Model varchar(50),
-Type varchar(50)
-);
