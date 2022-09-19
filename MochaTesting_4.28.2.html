@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- добавляем стили mocha для отображения результатов -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mocha/3.2.0/mocha.css">
+  <!-- добавляем сам фреймворк mocha -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/3.2.0/mocha.js"></script>
+  <script>
+    // включаем режим тестирования в стиле BDD
+    mocha.setup('bdd');
+  </script>
+  <!-- добавляем chai -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chai/3.5.0/chai.js"></script>
+  <script>
+    // chai предоставляет большое количество функций. Объявим assert глобально
+    let assert = chai.assert;
+  </script>
+</head>
+
+<body>
+  <!-- Скрипт с инструкцией по начальным условия-->
+  <script> alert("Для прохождения теста введите числа 4 (первое) и 6 (второе)")</script>
+
+  <script src="./HomeWork/Homework 4.28.2.js">  // Наш основной скрипт.
+  </script>
+
+  <!-- скрипт со спецификацией (describe, it...) -->
+  <script src="./HomeWork/Test 4.28.2.js"></script>
+
+  <!-- элемент с id="mocha" будет содержать результаты тестов -->
+  <div id="mocha"></div>
+
+  <!-- запускаем сами тесты -->
+  <script>
+    mocha.run();
+  </script>
+  
+</body>
+
+</html>
+

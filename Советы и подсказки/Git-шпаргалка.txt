@@ -112,7 +112,11 @@ the work tree to HEAD.
 - git push origin HEAD
 
 Замержить все ветки с удаленного репозитория:
+<<<<<<< HEAD
 - git pull origin
+=======
+git pull origin
+>>>>>>> 15a030410302ee5362ab2cc4db05ca266f846b3a
 
 Аналогично предыдущему, но накатывается только ветка master:
 - git pull origin master

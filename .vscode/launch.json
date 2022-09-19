@@ -3,5 +3,21 @@
     // Наведите указатель мыши, чтобы просмотреть описания существующих атрибутов.
     // Для получения дополнительной информации посетите: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
+<<<<<<< HEAD
     "configurations": []
+=======
+    "configurations": [
+        
+
+
+
+        {
+            "type": "pwa-chrome",
+            "request": "launch",
+            "name": "Launch Chrome against localhost",
+            "url": "file:///E:/JavaScript/index.html",
+            "webRoot": "${workspaceFolder}"
+        }
+    ]
+>>>>>>> 15a030410302ee5362ab2cc4db05ca266f846b3a
 }
