@@ -1,0 +1,5 @@
+SELECT prod_name, vend_name, prod_price, quantity
+FROM OrderItems, products, vendors
+WHERE products.vend_id = vendors.vend_id
+AND OrderItems.prod_id = products.prod_id
+AND order_num = 20007; 
