@@ -1,0 +1,2 @@
+<script> alert("Hopa!"); </script>
+<sСriPt> alert("Hopa!"); </SCrIpT>
