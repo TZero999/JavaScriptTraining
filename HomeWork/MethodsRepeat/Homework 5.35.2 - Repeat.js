@@ -22,6 +22,7 @@ let filter = [
     'boobs',
     'tits',
     'viagra',
+    'bitch',
 ];
 
 str_mod = str.toLowerCase();
