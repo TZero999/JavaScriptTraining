@@ -10,6 +10,10 @@ let masha = { name: "Маша", age: 28 };
 
 let users = [ vasya, petya, masha ];
 
-let names =  nameExtract(users);
+let names =  nameExtractor(users);
 
 alert (names); // [ Вася, Петя, Маша ]
+
+function nameExtractor(arr) {
+   return arr = arr.map( item => item.name);
+}
