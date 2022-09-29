@@ -12,7 +12,7 @@ alert (extractCurrencyValue(str));
 
 function extractCurrencyValue(){
 let str_m = str.slice(1);
-return +str_m;
+return +str_m; 
 };
 
 /*
