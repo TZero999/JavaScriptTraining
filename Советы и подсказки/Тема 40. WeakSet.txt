@@ -1,0 +1,26 @@
+- WeakSet
+
+Коллекция WeakSet схожа по ограничениям с WeakMap:
+1) Аналогична Set, но добавлять в неё можно ТОЛЬКО ОБЪЕКТЫ;
+2) Объект присутствует в множестве, только пока он доступен где-то ещё;
+3) Как и Set поддерживает: add, has, delete;
+4) НЕ поддерживает size, keys() и перебор данных.
+
+WeakSet тоже служит в качестве дополнительного хранилища данных, однако не произвольных.
+Обычно его используют для хранения значений "Да / Нет".
+
+Пример:
+let visitedSet = new WeakSet();
+
+let john = { name: "John" };
+let pete = { name: "Pete" };
+let mary = { name: "Mary" };
+
+visitedSet.add(john); //# John заходит к нам,
+visitedSet.add(pete); //# потом Pete,
+visitedSet.add(john); //# снова John. Т.О. visitedSet содержит 2-ух пользователей.
+
+alert(visitedSet.has(john)); //# true, John заходил.
+alert(visitedSet.has(mary)); //# false, Mary не посещала сайт.
+john = null; //# структура данных visitedSet будет очищена автоматически, а объект john будет удалён из visitedSet.
+
