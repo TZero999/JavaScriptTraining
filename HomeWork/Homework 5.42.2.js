@@ -42,3 +42,14 @@ for (let [name, salary] of Object.entries(arr)) {
 
 return alert(`Loser: ${loserName}, Salary: ${min}`) 
 }
+
+/*
+Решил сделать ещё и минимальную ЗП, чтобы лучше разобраться.
+
+Пытался усложнить задачу через reduce, но не вышло из-за того,
+что правильно записать максимальное целое число в JS не
+Number.MAX_SAFE_VALUE, а Number.MAX_SAFE_INTEGER.
+
+Из-за этого так и не смог запустить код с reduce, а когда понял причину - было поздно.
+
+*/
