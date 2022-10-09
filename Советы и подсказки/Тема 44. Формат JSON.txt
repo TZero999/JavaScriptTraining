@@ -1,0 +1,282 @@
+Допустим, есть сложный объект. Мы хотим преобразовать его в строку и топравить по сети/ вывести его для логирования.
+Теоретически можно было бы использовать метод .toString():
+    let user = {
+    name: "John",
+    age: 30,
+    toString() {
+      return `{name: "${this.name}", age: ${this.age}}`;
+}}
+
+Но в процессе разработки это создаст неприятности: добавятся новые свойства, могут быть переименованы старые.
+У этой задачи есть простое решенеи - JSON.stringify.
+
+- JSON.stringify
+
+JSON - общий формат для предоставления значений и объектов.
+JSON изначально создавался для JS, но теперь с его помощью можно передавать данные и на сервера на Ruby /PHP /Java и т.д.
+
+JS представляет следующие методы JSON:
+1) JSON.stringify(value, [replacer, space]) - для преобразования объектов в JSON,
+2) JSON.parse(str, [reviver]) - для преобразования JSON в объект (str - сам JSON, reviver - для преобразования значений).
+
+Пример объекта в JS:
+    let student = {
+    name: 'John',
+    age: 30,
+    isAdmin: false,
+    courses: ['html', 'css', 'js'],
+    wife: null
+  };
+let json = JSON.stringify(student);
+
+Получим объект в формате JSON:
+    {
+    "name": "John",
+    "age": 30,
+    "isAdmin": false,
+    "courses": ["html", "css", "js"],
+    "wife": null
+}
+
+Полученная строка - JSON-форматированная, или "сериализованный объект".
+Его можно отправить по сети или поместить в обычное хранилище данных.
+
+JSON-объект имеет несколько важных отличий от объектного литерала:
+1) Строки используют ТОЛЬКО ДВОЙНЫЕ КАВЫЧКИ.
+2) Имена всех свойств заключаются в двойные кавычки.
+
+JSON поддерживает следующие типы данных:
+1) Объекты {...};
+2) Массивы [...];
+   Примитивы:
+3) Строки;
+4) Числа;
+5) Логические значения;
+6) null.
+
+Примеры:
+    alert( JSON.stringify(1) ) //# 1 - остаётся числом
+    alert( JSON.stringify('test') ) //# "test"
+    alert( JSON.stringify(true) ); //# true 
+alert( JSON.stringify([1, 2, 3]) ); //# [1,2,3]
+
+- Свойства, игнорируемые JSON
+
+JSON.stringify() пропускуает некоторые специфические свойства объектов JS:
+1) Свойства-функции (методы);
+2) Символьные ключи и значения;
+3) Свойства, содержащие undefined 
+
+Т.О. пример:
+    let user = {
+    sayHi() { #// Будет пропущено
+      alert("Hello");
+    },
+    [Symbol("id")]: 123, #// Также будет пропущено
+    something: undefined #// И это тоже пропущено
+    };
+alert( JSON.stringify(user) ); // {} (пустой объект)
+
+Вложенные объекты поддерживаются и конвертируются автоматически.
+
+А вот ЦИКЛИЧЕСКИЕ ССЫЛКИ не поддерживаются, получим ошибку.
+    Пример:
+        let room = {
+        number: 23
+        };
+      
+        let meetup = {
+        title: "Conference",
+        participants: ["john", "ann"]
+        };
+      
+        meetup.place = room;       //# meetup ссылается на room
+        room.occupiedBy = meetup; //# room ссылается на meetup
+JSON.stringify(meetup); //# Ошибка: Преобразование цикличной структуры в JSON
+
+- Replacer - исключаем и преобразуем.
+Полный синтаксис JSON.stringify:
+let json = JSON.stringify(value, [replacer, space])
+    value - значение для преобразования;
+    replacer - массив свойств для преобразования/ функция соответствия;
+space - дополнительные отступы, используется для форматирования.
+    
+Почти всегда JSON.stringify() используется только с первым аргументом. Второй аргумент нужен для настройки процесса замены.
+Например, если нам надо отфильтровать циклические ссылки.
+
+Так, если мы передадим второму аргументу массив свойств - будут преобразованы только эти свойства.
+Пример:
+        let room = {
+    number: 23
+    };
+        let meetup = {
+    title: "Conference",
+    participants: [{name: "John"}, {name: "Alice"}],
+    place: room //# meetup ссылается на room
+    };
+  
+    room.occupiedBy = meetup; //# room ссылается на meetup
+    alert( JSON.stringify(meetup, ['title', 'participants']) ); //# Получим {"title":"Conference","participants":[{},{}]}
+Список свойств применяется ко всей структуре объекта, потому внутри participants пустые объекты, ВЕДЬ NAME НЕТ В СПИСКЕ.
+
+Теперь включим в список все свойства, кроме цикличной ссылки room.occupiedBy.
+Но тогда список выйдет достаточно длинный.
+
+Но в replacer можно вписывать и функции. Напишем функцию, что будет вызывать пару key, value и она должна будет возвращать
+заменённое значение, которое будет использоваться вместо исходного.
+
+В нашем случае надо вернуть value как есть, кроме occupiedBy. 
+Чтобы проигнорировать occupiedBy вернём вместо него undefined.
+Пример:
+        let room = {
+    number: 23
+    };
+        let meetup = {
+    title: "Conference",
+    participants: [{name: "John"}, {name: "Alice"}],
+    place: room //# meetup ссылается на room
+    };
+  
+    room.occupiedBy = meetup; //# room ссылается на meetup
+  
+    alert( JSON.stringify(meetup, function replacer(key, value) {
+    alert(`${key}: ${value}`);
+    return (key == 'occupiedBy') ? undefined : value;
+}));
+
+Что же приходит в replacer в результате:
+/*# пары ключ:значение, которые приходят в replacer:
+    :             [object Object]
+    title:        Conference
+    participants: [object Object],[object Object]
+    0:            [object Object]
+    name:         John
+    1:            [object Object]
+    name:         Alice
+    place:        [object Object]
+    number:       23
+    occupiedBy: [object Object]
+*/
+
+Получаетс, что функция replacer получает каждую пару ключ:значение, включая вложенные объекты и элементы массива.
+Значение "this" внутри replacer-а - это объект, который содержит текущее свойство.
+
+Первый вызов - всегда особенный. Ему передаётся "объект-обёртка": {"":meetup}.
+Другими словами первая пара (key, value) имеет пустой ключ, а значение её - целевой объект в общем.
+
+- Форматирование space
+Space - третий аргумент JSON.stringify. Этот аргумент отвечает за колчиество пробелов. 
+Он используется только в случае, если JSON надо представить в удобочитаемом виде.
+В качестве space можно указать число (число пробелов) или строку.
+
+- Пооьзовательский "toJSON"
+
+Как и toString для преобразования строк, объект может предоставлять метод toJSON для преобразования в JSON.
+Метод JSON.stringify автоматически вызывает его, если он есть.
+
+Пример:
+        let room = {
+    number: 23
+    };
+  
+        let meetup = {
+    title: "Conference",
+    date: new Date(Date.UTC(2017, 0, 1)),
+    room
+    };
+  
+    alert( JSON.stringify(meetup) );
+
+Получаем:
+    {
+    "title":"Conference",
+    "date":"2017-01-01T00:00:00.000Z",  // (1)
+    "room": {"number":23}               // (2)
+}
+
+Объект Date стал строкой. Это из-за того, что объекты типа Date имеют встроенный метод toJSON, который возвращает именно такую строку.
+
+Теперь создадим собственную реализацию метода toJSON в наш объект room.
+        let room = {
+    number: 23,
+    toJSON() {
+      return this.number;
+    }
+    };
+  
+        let meetup = {
+    title: "Conference",
+    room
+    };
+  
+    alert( JSON.stringify(room) ); //# 23
+    alert( JSON.stringify(meetup) );
+
+Получим:
+    {
+    "title":"Conference",
+    "room": 23
+}
+
+Если мы уберём метод toJSON, то получим немного иной алерт:
+    {
+    "number":23
+    } и {
+    "title":"Conference",
+    "room":{"number":23},
+}
+
+- JSON.parse  
+Чтобы декодировать JSON-строку в объект нам нужен метод JSON.parse
+let value = JSON.parse(str, [reviver]);
+
+Пример:
+    let numbers = "[0, 1, 2, 3]";
+    numbers = JSON.parse(numbers);
+alert( numbers[1] ); //# 1
+
+JSON может быть настолько сложным, насколько это необходимо.
+
+Вот ТИПИЧНЫЕ ОШИБКИ, если JSON-файл написан от руки:
+    let json = `{
+    name: "John",                     //# Ошибка 1: имя свойства без кавычек
+    "surname": 'Smith',               //# Ошибка 2: одинарные кавычки в значении (должны быть двойными)
+    'isAdmin': false                  //# Ошибка 3: одинарные кавычки в ключе (должны быть двойными)
+    "birthday": new Date(2000, 2, 3), //# Ошибка 4: не допускается конструктор "new", только значения.
+    "friends": [0,1,2,3]              //# Здесь всё в порядке
+}`;
+
+Кстати, JSON не поддерживает комментарии. Если мы попытаемся добавить в JSON комментарий - это его "сломает".
+
+Существует формат JSON5. Он поддерживает ключи без кавычек, комментарии и ь.д.
+Но это - самостоятельная библиотека, а не спецификация языка.
+
+- JSON.parse (reviever)
+
+Предположим мы получили от сервера объект meetup в виде строки:
+let str = '{"title":"Conference","date":"2017-11-30T12:00:00.000Z"}'; //# title: (meetup title), date: (meetup date)
+
+Пытаемся её "десериализировать" - превратить в объект JS. Вызываем JSON.parse:
+    let str = '{"title":"Conference","date":"2017-11-30T12:00:00.000Z"}';
+    let meetup = JSON.parse(str);
+    alert( meetup.date.getDate() ); //# Ошибка: meetup.date.getDate is not a function
+alert (meetup); //# { title: 'Conference', date: '2017-11-30T12:00:00.000Z' }
+
+Логично, с помощью вызова алерта для самого объекта meetup мы видим, что date - не объект, а обычная строка.
+
+В таком случае нам надо схитрить и сделать функцию для восстановления нашей date как объекта Date:
+    let str = '{"title":"Conference","date":"2017-11-30T12:00:00.000Z"}';
+    let meetup = JSON.parse(str, function(key, value) {  //# или же ...str, (key, value) => {if (key == 'date') return new Date(value);
+    if (key == 'date') return new Date(value);
+    return value;
+    });
+    alert( meetup.date.getDate() ); //# 30 - теперь работает!
+alert( meetup ); //# { title: 'Conference', date: 2017-11-30T12:00:00.000Z } date - уже объект Date, а не строка.
+
+Со ВСТРОЕННЫМИ ОБЪЕКТАМИ Date сработает точно такая же функция.
+
+- ИТОГО:
+1) JSON - формат данных, имеющий собственный независимый стандарт;
+2) JSON поддерживает простые объекты, массивы, строки, числа, логические значения и null;
+3) JS предоставляет методы JSON.stringify (для сериализации в JSON) и JSON.parse (для чтения из JSON);
+4) Если объект имеет метод .toJSON, то он вызывается через JSON.stringify.
