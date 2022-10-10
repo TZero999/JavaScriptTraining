@@ -3,3 +3,28 @@ http://testingchallenges.thetestingmap.org/index.php
 
 Ответ:
 https://mp4-b.udemycdn.com/2018-02-13_22-16-17-ba344fc30e0d31e90c22fa21e13d56bd/WebHD_720p.mp4?secure=otaOwsQL1Eeb8iEU0yP0mw==,1663355288
+
+Проведённые тесты: 14/18
+
+1)Basic Sql injection
+2) Non ASCII
+3) Space values at the end
+3) Space values at the beginning
+5) Maximum values
+6) Space in the middle
+7) You used html tags
+8) Basic XSS
+9) More than maximum values
+10) Empty value
+11) Space
+12) Minimum value
+13) Other chars then alphabetic
+14) Average value
+
+Тесты, о которых не додумался сам:
+
+1) You looked at the cookie - проверка токена в Cookies;
+2) You looked at the page source - Проверка кода страницы;
+3) Missing css - В коде страницы указано, что необходимо использовать имя файла CSS, если он отсутствует;
+4) You made the user admin - Здесь всё сложнее. Необходимо специальным ПО перехватить запрос к серверу и передать в специальном
+параметре "user_right_as_admin" 1-цу вместо 0.
