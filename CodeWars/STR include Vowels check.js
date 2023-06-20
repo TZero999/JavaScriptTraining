@@ -3,7 +3,7 @@ let str = 'abracadabra';
 console.log( getCount(str) );
 
 function getCount(str) {
-  let regexp = /[a,e,i,o,u]/i;
+  let regexp = /[aeiou]/i;
   let count = 0;
 
 for (let char of str ){
